@@ -2,11 +2,8 @@
 
 namespace Omnipay\Neteller\Message;
 
-use Guzzle\Http\Exception\BadResponseException;
-
 /**
  * Neteller Purchase Request.
- *
  * @author    Alexander Fedra <contact@dercoder.at>
  * @copyright 2016 DerCoder
  * @license   http://opensource.org/licenses/mit-license.php MIT
@@ -90,12 +87,10 @@ class PurchaseRequest extends AbstractRequest
 
         $uri = $this->createUri('transferIn');
 
-        try {
-            $response = $this->httpClient->post($uri, $headers, json_encode($data))->send();
-        } catch (BadResponseException $e) {
-            $response = $e->getResponse();
-        }
+        $response = $this->httpClient->request('POST', $uri, $headers, json_encode($data));
 
-        return new PurchaseResponse($this, $response->json());
+        $json = json_decode($response->getBody()->getContents(), true);
+
+        return new PurchaseResponse($this, $json);
     }
 }

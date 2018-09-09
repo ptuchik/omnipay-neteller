@@ -1,4 +1,5 @@
 <?php
+
 namespace Omnipay\Neteller\Message;
 
 use Omnipay\Tests\TestCase;
@@ -38,7 +39,8 @@ class FetchTransactionRequestTest extends TestCase
         $this->assertArrayNotHasKey('refType', $data);
 
         $this->request->initialize(array());
-        $this->setExpectedException('Omnipay\Common\Exception\InvalidRequestException', 'The transactionId or transactionReference parameter is required');
+        $this->expectException('Omnipay\Common\Exception\InvalidRequestException');
+        $this->expectExceptionMessage('The transactionId or transactionReference parameter is required');
         $this->request->getData();
     }
 

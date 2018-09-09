@@ -6,7 +6,6 @@ use Exception;
 
 /**
  * Neteller Abstract Request.
- *
  * @author    Alexander Fedra <contact@dercoder.at>
  * @copyright 2016 DerCoder
  * @license   http://opensource.org/licenses/mit-license.php MIT
@@ -30,7 +29,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Get Neteller client ID.
-     *
      * @return string clientId
      */
     public function getClientId()
@@ -52,7 +50,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Get Neteller client secret.
-     *
      * @return string clientSecret
      */
     public function getClientSecret()
@@ -87,8 +84,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'grant_type' => 'client_credentials'
         ));
 
-        $response = $this->httpClient->post($uri, $headers)->send();
-        $json = $response->json();
+        $response = $this->httpClient->request('POST', $uri, $headers);
+        $json = json_decode($response->getBody()->getContents(), true);
 
         return $json['accessToken'];
     }
@@ -103,7 +100,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         $url = sprintf('%s/v%d/%s', $this->getEndpoint(), $this->version, $path);
         if ($query) {
-            $url .= '?' . http_build_query($query);
+            $url .= '?'.http_build_query($query);
         }
 
         return $url;
@@ -114,7 +111,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function createBasicAuthorization()
     {
-        return 'Basic ' . base64_encode($this->getClientId() . ':' . $this->getClientSecret());
+        return 'Basic '.base64_encode($this->getClientId().':'.$this->getClientSecret());
     }
 
     /**
@@ -123,7 +120,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function createBearerAuthorization()
     {
         $token = $this->getOAuth2Token();
-        return 'Bearer ' . $token;
+
+        return 'Bearer '.$token;
     }
 
     /**
